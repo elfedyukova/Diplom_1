@@ -1,10 +1,21 @@
 package org.praktikum;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
+import static org.junit.Assert.assertEquals;
+import static org.praktikum.IngredientType.FILLING;
+import static org.praktikum.IngredientType.SAUCE;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BurgerTest {
@@ -12,50 +23,72 @@ public class BurgerTest {
     @Mock
     Burger burger;
 
-    @Test
-    public void setBunsAnyTest() {
-        Burger burger = new Burger();
-        burger.setBuns(new Bun("hot sauce", 100));
-        Assert.assertEquals(200, burger.getPrice(), 1);
+    @Mock
+    Bun bun;
+    Ingredient ingredient;
+    Ingredient sauce;
+    Ingredient dinosaur;
+
+    @Before
+    public void init() {
+        MockitoAnnotations.initMocks(this);
+        burger = new Burger();
+        sauce = new Ingredient(SAUCE, "meat", 100);
+        dinosaur = new Ingredient(FILLING, "dinosaur", 200);
+        bun = new Bun("hot sauce", 100);
     }
 
     @Test
-    public void addIngredientAnyTest() {
-        Burger burger = new Burger();
-        burger.addIngredient(new Ingredient(IngredientType.SAUCE, "hot sauce", 100));
-        Assert.assertNotNull(burger.ingredients);
+    public void setBunsTest() {
+        burger.setBuns(bun);
+        assertEquals(bun, burger.bun);
+    }
+
+    @Test
+    public void addIngredientTest() {
+        burger.addIngredient(ingredient);
+        assertEquals(singletonList(ingredient), burger.ingredients);
     }
 
     @Test
     public void removeIngredientAnyIntTest() {
-        Burger burger = new Burger();
-        burger.addIngredient(new Ingredient(IngredientType.SAUCE, "hot sauce", 100));
+        burger.addIngredient(sauce);
+        burger.addIngredient(dinosaur);
+        List<Ingredient> actualList = burger.ingredients;
+        int actual = actualList.size();
+
         burger.removeIngredient(0);
-        Assert.assertNotNull(burger.ingredients);
+        int expected = actualList.size();
+
+        assertEquals(expected, actual - 1);
     }
 
     @Test
     public void moveIngredientAnyIntTest() {
-        Burger burger = new Burger();
-        burger.addIngredient(new Ingredient(IngredientType.SAUCE, "hot sauce", 100));
-        burger.moveIngredient(0, 0);
-        Assert.assertNotNull(burger.ingredients);
-        //Mockito.verify(burger).removeIngredient(Mockito.anyInt());
+        List<Ingredient> expectedList = new ArrayList<>(asList(sauce, dinosaur));
+        Ingredient expected = expectedList.get(1);
+
+        burger.addIngredient(sauce);
+        burger.addIngredient(dinosaur);
+        List<Ingredient> actualList = burger.ingredients;
+
+        burger.moveIngredient(0, 1);
+        Ingredient actual = actualList.get(0);
+
+        assertEquals(expected.getName(), actual.getName());
     }
 
     @Test
     public void getPriceTest() {
-        Burger burger = new Burger();
-        burger.setBuns(new Bun("hot sauce", 100));
+        burger.setBuns(bun);
         float actual = burger.getPrice();
-        Assert.assertEquals(200, actual, 1);
+        assertEquals(200, actual, 0);
 
     }
 
     @Test
     public void getReceiptTest() {
-        Burger burger = new Burger();
-        burger.setBuns(new Bun("hot sauce", 100));
+        burger.setBuns(bun);
         System.out.println(burger.getReceipt());
         Assert.assertNotNull(burger.ingredients);
 

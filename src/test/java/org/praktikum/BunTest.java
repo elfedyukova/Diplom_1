@@ -1,19 +1,30 @@
 package org.praktikum;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.util.Random;
 
 public class BunTest {
 
+    private static final String NAME = "первый";
+    private static final float PRICE = new Random().nextFloat();
+
+    private Bun bun;
+
+    @Before
+    public void initBun() {
+        bun = new Bun(NAME, PRICE);
+    }
+
     @Test
     public void getNameTest() {
-        Bun bun = new Bun("первый", 34);
-        Assert.assertEquals("первый", bun.getName());
+        Assert.assertEquals(NAME, bun.getName());
     }
 
     @Test
     public void getPriceTest() {
-        Bun bun = new Bun("первый", 34);
-        Assert.assertEquals(34, bun.getPrice(), 1);
+        Assert.assertEquals(PRICE, bun.getPrice(), 0);
     }
 }
